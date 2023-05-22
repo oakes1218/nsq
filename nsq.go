@@ -23,8 +23,8 @@ type ParserNSQTopic struct {
 	Handler   string `mapstructure:"handler"`
 	Topic     string `mapstructure:"topic"`
 	Channel   string `mapstructure:"channel"`
-	Boardcast string `mapstructure:"boardcast"`
-	Ephemeral string `mapstructure:"ephemeral"`
+	Boardcast bool   `mapstructure:"boardcast"`
+	Ephemeral bool   `mapstructure:"ephemeral"`
 }
 
 type NsqConsumer struct {
@@ -120,7 +120,7 @@ func InitConsumer(tcMap map[string][]string) {
 
 		config := nsq.NewConfig()
 		config.MaxInFlight = 360
-		config.MaxAttempts = 0
+		config.MaxAttempts = 5 //最多requese 5次
 		config.MsgTimeout = 10 * time.Minute
 
 		consumer, err := nsq.NewConsumer(v[0], v[1], config)
@@ -135,7 +135,8 @@ func InitConsumer(tcMap map[string][]string) {
 		consumer.AddConcurrentHandlers(fun, 200)
 		// consumer.AddHandler(soloOrderHandler())
 
-		err = consumer.ConnectToNSQLookupd("nsqlookupd:4161")
+		// err = consumer.ConnectToNSQLookupd("nsqlookupd:4161")
+		err = consumer.ConnectToNSQLookupd("127.0.0.1:4161")
 		// err = consumer.ConnectToNSQD("127.0.0.1:4150")
 		if err != nil {
 			log.Fatal(err)
@@ -151,7 +152,8 @@ func InitProducer() {
 	config.MaxAttempts = 0
 	config.MsgTimeout = 10 * time.Minute
 
-	producer, err := nsq.NewProducer("test-nsqd:4150", config)
+	// producer, err := nsq.NewProducer("test-nsqd:4150", config)
+	producer, err := nsq.NewProducer("127.0.0.1:4150", config)
 	if err != nil {
 		log.Fatal(err)
 	}

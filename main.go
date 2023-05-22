@@ -48,8 +48,9 @@ func init() {
 
 	log.Println("ENV:", Val)
 	log.Println("Cofing 設定成功")
-	log.Println(viper.Get("NSQTOPIC"))
-	log.Println(viper.Get("NSQRECEIVETOPIC_TOPIC_2_HANDLER"), "")
+	// log.Println(viper.Get("NSQTOPIC"))
+	// log.Println(viper.Get("NSQRECEIVETOPIC_TOPIC_2_HANDLER"), "")
+
 	// init log
 	pclog.Pclog = pclog.New()
 	// init user DB conn
@@ -83,8 +84,9 @@ func main() {
 		close(done)
 	}()
 
+	go httpServer()
 	InitNsq()
-	httpServer()
+	<-done
 
 	log.Println("exit")
 }
@@ -92,7 +94,14 @@ func main() {
 func InitNsq() {
 	tcMap := make(map[string][]string)
 	for _, v := range Val.NsqReceiveTopic {
-		tcS := []string{v.Topic, v.Channel}
+		var channel string
+		if v.Ephemeral {
+			channel = v.Channel + "#ephemeral"
+		} else {
+			channel = v.Channel
+		}
+
+		tcS := []string{v.Topic, channel}
 		tcMap[v.Handler] = tcS
 	}
 
