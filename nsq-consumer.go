@@ -22,8 +22,8 @@ type NsqMessage struct {
 	Order_Time int64  `json:"order_time"`
 }
 
-var url = "pin"
-var i int
+// var url = "pin"
+// var i int
 
 func (c *Consumer) HandlerForTopicSoloOrder() nsq.Handler {
 	return nsq.HandlerFunc(func(message *nsq.Message) error {
