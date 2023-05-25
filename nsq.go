@@ -135,9 +135,9 @@ func InitConsumer(tcMap map[string][]string) {
 		consumer.AddConcurrentHandlers(fun, 200)
 		// consumer.AddHandler(soloOrderHandler())
 
-		// err = consumer.ConnectToNSQLookupd("nsqlookupd:4161")
+		err = consumer.ConnectToNSQLookupd("nsqlookupd:4161")
 		// err = consumer.ConnectToNSQLookupd("127.0.0.1:4161")
-		err = consumer.ConnectToNSQD("127.0.0.1:4150")
+		// err = consumer.ConnectToNSQD("127.0.0.1:4150")
 		if err != nil {
 			log.Fatal(err)
 		}
