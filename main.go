@@ -135,10 +135,10 @@ var wg sync.WaitGroup
 
 func PushMsg(c *gin.Context) {
 	t := time.Now()
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		for i := 0; i < 3000; i++ {
+	wg.Add(3000)
+	for i := 0; i < 3000; i++ {
+		go func() {
+			defer wg.Done()
 			messageBody := []byte(`[{"error":{"msg":"SYSTEM_ERROR","code":125041045,"extrainfo":null,"time":1645692452,"service":"SOLO","origin_err":"Key"},"user_id":1095926084804800513,"game_name":""}]`)
 			topicName := "SOLO_ORDER_ERROR_TOPIC"
 			err := nsqProducer.GetNsqProducer().Publish(topicName, messageBody)
@@ -146,21 +146,19 @@ func PushMsg(c *gin.Context) {
 			if err != nil {
 				log.Fatal(err)
 			}
-		}
-	}()
+		}()
 
-	go func() {
-		defer wg.Done()
-		for i := 0; i < 3000; i++ {
-			messageBody1 := []byte(` {"order_id":1036904237549768705,"order_mode":1,"game_manager_id":1,"platform_id":10001,"user_id":12345678901,"game_manager_name":"GAMETE01","platform_name":"MER10001","user_name":"MER10001@test1","game_name":"BBQL","draw_id":1031,"draw_num":"201809041031","rule":"r0013","tag":"","choose":"LOCATE:S:ODD","extra_info":null,"total_bet":1,"total_bet_gold":5,"odds":{"LOCATE:S:ODD":1.94},"fair_odds":{"LOCATE:S:ODD":2},"origin_odds":{"LOCATE:S:ODD":1.94},"bet_gold":5,"win_gold":0,"paid_gold":0,"profit_gold":0,"wars":0,"pay_max":500000,"result":null,"result_display":null,"status":1,"currency":"CNY","exchange_rate":1,"win":null,"lose":null,"tie":null,"error_code":0,"ip":"202.3.3.1","entrance":1,"portal":1,"client":1,"device":1,"order_time":1536052255,"computed_time":0,"computed_count":0,"updated_time":1536052209,"cart_id":1036904237549768704,"trace_id":"thisIsTestingTraceIDCancel","is_auto":false}`)
-			topicName1 := "EDEN_ORDER_CREDIT"
-			err := nsqProducer.GetNsqProducer().Publish(topicName1, messageBody1)
+		// go func() {
+		// 	defer wg.Done()
+		// 	messageBody1 := []byte(` {"order_id":1036904237549768705,"order_mode":1,"game_manager_id":1,"platform_id":10001,"user_id":12345678901,"game_manager_name":"GAMETE01","platform_name":"MER10001","user_name":"MER10001@test1","game_name":"BBQL","draw_id":1031,"draw_num":"201809041031","rule":"r0013","tag":"","choose":"LOCATE:S:ODD","extra_info":null,"total_bet":1,"total_bet_gold":5,"odds":{"LOCATE:S:ODD":1.94},"fair_odds":{"LOCATE:S:ODD":2},"origin_odds":{"LOCATE:S:ODD":1.94},"bet_gold":5,"win_gold":0,"paid_gold":0,"profit_gold":0,"wars":0,"pay_max":500000,"result":null,"result_display":null,"status":1,"currency":"CNY","exchange_rate":1,"win":null,"lose":null,"tie":null,"error_code":0,"ip":"202.3.3.1","entrance":1,"portal":1,"client":1,"device":1,"order_time":1536052255,"computed_time":0,"computed_count":0,"updated_time":1536052209,"cart_id":1036904237549768704,"trace_id":"thisIsTestingTraceIDCancel","is_auto":false}`)
+		// 	topicName1 := "EDEN_ORDER_CREDIT"
+		// 	err := nsqProducer.GetNsqProducer().Publish(topicName1, messageBody1)
 
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-	}()
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// }()
+	}
 
 	wg.Wait()
 	tt := &RespTime{
