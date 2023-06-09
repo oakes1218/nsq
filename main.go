@@ -135,18 +135,18 @@ var wg sync.WaitGroup
 
 func PushMsg(c *gin.Context) {
 	t := time.Now()
-	wg.Add(3000)
-	for i := 0; i < 3000; i++ {
-		go func() {
-			defer wg.Done()
-			messageBody := []byte(`[{"error":{"msg":"SYSTEM_ERROR","code":125041045,"extrainfo":null,"time":1645692452,"service":"SOLO","origin_err":"Key"},"user_id":1095926084804800513,"game_name":""}]`)
-			topicName := "SOLO_ORDER_ERROR_TOPIC"
-			err := nsqProducer.GetNsqProducer().Publish(topicName, messageBody)
+	// wg.Add(30000)
+	for i := 0; i < 30000; i++ {
+		// go func() {
+		// 	defer wg.Done()
+		messageBody := []byte(`[{"error":{"msg":"SYSTEM_ERROR","code":125041045,"extrainfo":null,"time":1645692452,"service":"SOLO","origin_err":"Key"},"user_id":1095926084804800513,"game_name":""}]`)
+		topicName := "SOLO_ORDER_ERROR_TOPIC"
+		err := nsqProducer.GetNsqProducer().Publish(topicName, messageBody)
 
-			if err != nil {
-				log.Fatal(err)
-			}
-		}()
+		if err != nil {
+			log.Fatal(err)
+		}
+		// }()
 
 		// go func() {
 		// 	defer wg.Done()
@@ -160,7 +160,7 @@ func PushMsg(c *gin.Context) {
 		// }()
 	}
 
-	wg.Wait()
+	// wg.Wait()
 	tt := &RespTime{
 		TotalTime: time.Duration(time.Since(t).Milliseconds()),
 	}

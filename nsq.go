@@ -135,8 +135,8 @@ func InitConsumer(tcMap map[string][]string) {
 		consumer.AddConcurrentHandlers(fun, 200)
 		// consumer.AddHandler(soloOrderHandler())
 
-		err = consumer.ConnectToNSQLookupd("nsqlookupd:4161")
-		// err = consumer.ConnectToNSQLookupd("127.0.0.1:4161")
+		// err = consumer.ConnectToNSQLookupd("nsqlookupd:4161")
+		err = consumer.ConnectToNSQLookupd("127.0.0.1:4161")
 		// err = consumer.ConnectToNSQD("127.0.0.1:4150")
 		if err != nil {
 			log.Fatal(err)
@@ -152,8 +152,8 @@ func InitProducer() {
 	config.MaxAttempts = 0
 	config.MsgTimeout = 10 * time.Minute
 
-	producer, err := nsq.NewProducer("test-nsqd:4150", config)
-	// producer, err := nsq.NewProducer("127.0.0.1:4150", config)
+	// producer, err := nsq.NewProducer("test-nsqd:4150", config)
+	producer, err := nsq.NewProducer("127.0.0.1:4150", config)
 	if err != nil {
 		log.Fatal(err)
 	}
